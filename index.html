@@ -45,6 +45,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 	    <span>Download Now</span>
     </button>	
     <a href="https://www.delfi.lt/"><button>External Redirect</button></a>
+
+	<h2>Simple Test Form</h2>
+    
+    <form id="testForm" action="thank-you.html" method="POST">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+        
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+        
+        <button onclick="redirect()" type="submit">Submit</button>
+    </form>
 	
     <script>
         function redirect() {
