@@ -86,46 +86,52 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         }
     </script>
 
-    <script>
-        document.getElementById('purchaseForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+<script>
+    document.getElementById('purchaseForm').addEventListener('submit', function(event) {
+        event.preventDefault();
 
-            const itemName = document.getElementById('itemName').value;
-            const itemPrice = parseFloat(document.getElementById('itemPrice').value);
-            const itemDiscount = parseFloat(document.getElementById('itemDiscount').value || 0);
-            const itemQuantity = parseInt(document.getElementById('itemQuantity').value);
+        const itemName = document.getElementById('itemName').value;
+        const itemPrice = parseFloat(document.getElementById('itemPrice').value);
+        const itemDiscount = parseFloat(document.getElementById('itemDiscount').value || 0);
+        const itemQuantity = parseInt(document.getElementById('itemQuantity').value);
 
-            const purchaseData = {
-                item_name: itemName,
-                price: itemPrice,
-                discount: itemDiscount,
-                quantity: itemQuantity,
-                total: (itemPrice - itemDiscount) * itemQuantity
-            };
+        // Check if itemDiscount is greater than itemPrice
+        if (itemDiscount > itemPrice) {
+            alert('Discount cannot be greater than the price');
+            return;
+        }
 
-            // Log the data for testing
-            console.log('Purchase Data:', purchaseData);
+        const total = (itemPrice - itemDiscount) * itemQuantity;
 
-            // You would send this data to GA4 via GTM here
-            // For example, using dataLayer.push
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-                event: 'purchase',
-                ecommerce: {
-                    transaction_id: Date.now().toString(),
-                    value: purchaseData.total,
-                    items: [{
-                        item_name: purchaseData.item_name,
-                        price: purchaseData.price,
-                        discount: purchaseData.discount,
-                        quantity: purchaseData.quantity
-                    }]
-                }
-            });
+        const purchaseData = {
+            item_name: itemName,
+            price: itemPrice,
+            discount: itemDiscount,
+            quantity: itemQuantity,
+            total: total
+        };
 
-            alert('Purchase event sent to dataLayer. Check console for details.');
+        console.log('Purchase Data:', purchaseData);
+
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: 'purchase',
+            ecommerce: {
+                transaction_id: Date.now().toString(),
+                value: purchaseData.total,
+                items: [{
+                    item_name: purchaseData.item_name,
+                    price: purchaseData.price,
+                    discount: purchaseData.discount,  // Ensure discount is sent
+                    quantity: purchaseData.quantity
+                }]
+            }
         });
-    </script>
+
+        alert('Purchase event sent to dataLayer. Check console for details.');
+    });
+</script>
+
 
 <script>
 window.dataLayer = window.dataLayer || [];
