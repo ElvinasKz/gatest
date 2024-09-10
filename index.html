@@ -85,49 +85,30 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script>
     document.getElementById('purchaseForm').addEventListener('submit', function(event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent the default form submission
 
-        const itemName = document.getElementById('itemName').value;
-        const itemPrice = parseFloat(document.getElementById('itemPrice').value);
-        const itemDiscount = parseFloat(document.getElementById('itemDiscount').value || 0);
-        const itemQuantity = parseInt(document.getElementById('itemQuantity').value);
-
-        // Check if itemDiscount is greater than itemPrice
-        if (itemDiscount > itemPrice) {
-            alert('Discount cannot be greater than the price');
-            return;
-        }
-
-        const total = (itemPrice - itemDiscount) * itemQuantity;
-
-        const purchaseData = {
-            item_name: itemName,
-            price: itemPrice,
-            discount: itemDiscount,
-            quantity: itemQuantity,
-            total: total
-        };
-
-        console.log('Purchase Data:', purchaseData);
-
+        // Push data to the dataLayer
         window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ ecommerce: null }); // Clear the previous ecommerce object
+
         window.dataLayer.push({
             event: 'purchase',
             ecommerce: {
-                transaction_id: Date.now().toString(),
-                value: purchaseData.total,
-                items: [{
-                    item_name: purchaseData.item_name,
-                    price: purchaseData.price,
-                    discount: purchaseData.discount,  // Ensure discount is sent
-                    quantity: purchaseData.quantity
-                }]
+                currency: 'USD', // Update as necessary
+                value: document.getElementById('itemPrice').value * document.getElementById('itemQuantity').value,
+                items: [
+                    {
+                        item_name: document.getElementById('itemName').value,
+                        price: document.getElementById('itemPrice').value,
+                        quantity: document.getElementById('itemQuantity').value
+                        // Add additional eCommerce parameters as needed
+                    }
+                ]
             }
         });
-
-        alert('Purchase event sent to dataLayer. Check console for details.');
     });
 </script>
+
 
 
 <script>
