@@ -57,6 +57,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         
         <button type="submit">Submit</button>
     </form>
+
+	    <h2>Purchase Item</h2>
+    <form id="purchaseForm">
+        <label for="itemName">Item Name:</label>
+        <input type="text" id="itemName" name="itemName" value="Random Product" required><br><br>
+        
+        <label for="itemPrice">Price ($):</label>
+        <input type="number" id="itemPrice" name="itemPrice" value="50" required><br><br>
+        
+        <label for="itemDiscount">Discount ($):</label>
+        <input type="number" id="itemDiscount" name="itemDiscount" value="10"><br><br>
+        
+        <label for="itemQuantity">Quantity:</label>
+        <input type="number" id="itemQuantity" name="itemQuantity" value="1" required><br><br>
+        
+        <button type="submit">Purchase</button>
+    </form>
 	
     <script>
         function redirect() {
@@ -67,6 +84,47 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         function redirect2() {
             window.location.href = 'index3.html';
         }
+    </script>
+
+    <script>
+        document.getElementById('purchaseForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const itemName = document.getElementById('itemName').value;
+            const itemPrice = parseFloat(document.getElementById('itemPrice').value);
+            const itemDiscount = parseFloat(document.getElementById('itemDiscount').value || 0);
+            const itemQuantity = parseInt(document.getElementById('itemQuantity').value);
+
+            const purchaseData = {
+                item_name: itemName,
+                price: itemPrice,
+                discount: itemDiscount,
+                quantity: itemQuantity,
+                total: (itemPrice - itemDiscount) * itemQuantity
+            };
+
+            // Log the data for testing
+            console.log('Purchase Data:', purchaseData);
+
+            // You would send this data to GA4 via GTM here
+            // For example, using dataLayer.push
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                event: 'purchase',
+                ecommerce: {
+                    transaction_id: Date.now().toString(),
+                    value: purchaseData.total,
+                    items: [{
+                        item_name: purchaseData.item_name,
+                        price: purchaseData.price,
+                        discount: purchaseData.discount,
+                        quantity: purchaseData.quantity
+                    }]
+                }
+            });
+
+            alert('Purchase event sent to dataLayer. Check console for details.');
+        });
     </script>
 
 <script>
