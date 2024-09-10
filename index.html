@@ -58,19 +58,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <button type="submit">Submit</button>
     </form>
 
-	    <h2>Purchase Item</h2>
-    <form id="purchaseForm">
-        <label for="itemName">Item Name:</label>
-        <input type="text" id="itemName" name="itemName" value="Random Product" required><br><br>
-        
-        <label for="itemPrice">Price ($):</label>
-        <input type="number" id="itemPrice" name="itemPrice" value="50" required><br><br>
-        
-        <label for="itemQuantity">Quantity:</label>
-        <input type="number" id="itemQuantity" name="itemQuantity" value="1" required><br><br>
-        
-        <button type="submit">Purchase</button>
-    </form>
+<h2>Purchase Items</h2>
+<form id="purchaseForm">
+    <div id="productsContainer">
+        <div class="product">
+            <label for="itemName">Item Name:</label>
+            <input type="text" class="itemName" name="itemName" value="Product 1" required><br><br>
+            
+            <label for="itemPrice">Price ($):</label>
+            <input type="number" class="itemPrice" name="itemPrice" value="50" step="0.01" required><br><br>
+            
+            <label for="itemQuantity">Quantity:</label>
+            <input type="number" class="itemQuantity" name="itemQuantity" value="1" required><br><br>
+
+            <label for="itemDiscount">Discount ($):</label>
+            <input type="number" class="itemDiscount" name="itemDiscount" value="0" step="0.01"><br><br>
+        </div>
+        <!-- You can add more product divs here or use JavaScript to add them dynamically -->
+    </div>
+    <button type="submit">Purchase</button>
+</form>
+
 	
     <script>
         function redirect() {
@@ -124,30 +132,51 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 <script>
-window.dataLayer = window.dataLayer || [];
+    document.getElementById('purchaseForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
 
-document.addEventListener("DOMContentLoaded", function() {
-    var form = document.getElementById("testForm");
+        // Initialize dataLayer
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ ecommerce: null }); // Clear the previous ecommerce object
 
-    if (form) {
-        form.addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent form from submitting immediately
+        // Get all product elements
+        const products = document.querySelectorAll('.product');
+        const items = [];
+        let totalValue = 0;
 
-            // Push anonymized event to the dataLayer (NO PII)
-            window.dataLayer.push({
-                "event": "formSubmission", // Custom event name
-                "formId": "testForm",       // ID of the form
-                "formType": "contactForm"   // Add any non-identifiable information you need
+        products.forEach(product => {
+            const itemName = product.querySelector('.itemName').value;
+            const itemPrice = parseFloat(product.querySelector('.itemPrice').value);
+            const itemQuantity = parseInt(product.querySelector('.itemQuantity').value, 10);
+            const itemDiscount = parseFloat(product.querySelector('.itemDiscount').value);
+
+            const itemTotal = (itemPrice * itemQuantity) - itemDiscount;
+
+            items.push({
+                item_name: itemName,
+                price: itemPrice.toFixed(2),
+                quantity: itemQuantity,
+                discount: itemDiscount.toFixed(2) // Add discount to item data
             });
 
-            console.log("Custom event 'formSubmission' pushed to dataLayer");
-
-            // Submit the form after pushing the data to the dataLayer
-            form.submit();
+            totalValue += itemTotal;
         });
-    }
-});
+
+        // Push the data to dataLayer
+        window.dataLayer.push({
+            event: 'purchase',
+            ecommerce: {
+                currency: 'USD', // Update as necessary
+                value: totalValue.toFixed(2), // Total value of all items after discount
+                items: items
+            }
+        });
+
+        // Redirect after submission if needed
+        // redirect(); // Uncomment this line if you want to redirect after submission
+    });
 </script>
+
 
 
 
