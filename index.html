@@ -69,6 +69,34 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         }
     </script>
 
+<script>
+window.dataLayer = window.dataLayer || [];
+
+document.addEventListener("DOMContentLoaded", function() {
+    var form = document.getElementById("testForm");
+
+    if (form) {
+        form.addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form from submitting immediately
+
+            // Push anonymized event to the dataLayer (NO PII)
+            window.dataLayer.push({
+                "event": "formSubmission", // Custom event name
+                "formId": "testForm",       // ID of the form
+                "formType": "contactForm"   // Add any non-identifiable information you need
+            });
+
+            console.log("Custom event 'formSubmission' pushed to dataLayer");
+
+            // Submit the form after pushing the data to the dataLayer
+            form.submit();
+        });
+    }
+});
+</script>
+
+
+
     
 </body>
 
