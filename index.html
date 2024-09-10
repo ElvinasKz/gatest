@@ -91,23 +91,35 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({ ecommerce: null }); // Clear the previous ecommerce object
 
+        // Get and convert values
+        const itemName = document.getElementById('itemName').value;
+        const itemPrice = parseFloat(document.getElementById('itemPrice').value);
+        const itemQuantity = parseInt(document.getElementById('itemQuantity').value, 10);
+
+        // Calculate the total value
+        const totalValue = itemPrice * itemQuantity;
+
         window.dataLayer.push({
             event: 'purchase',
             ecommerce: {
                 currency: 'USD', // Update as necessary
-                value: document.getElementById('itemPrice').value * document.getElementById('itemQuantity').value,
+                value: totalValue.toFixed(2), // Ensure proper formatting
                 items: [
                     {
-                        item_name: document.getElementById('itemName').value,
-                        price: document.getElementById('itemPrice').value,
-                        quantity: document.getElementById('itemQuantity').value
+                        item_name: itemName,
+                        price: itemPrice.toFixed(2),
+                        quantity: itemQuantity
                         // Add additional eCommerce parameters as needed
                     }
                 ]
             }
         });
+
+        // Redirect after submission if needed
+        // redirect(); // Uncomment this line if you want to redirect after submission
     });
 </script>
+
 
 
 
