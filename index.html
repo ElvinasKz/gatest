@@ -58,7 +58,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <button type="submit">Submit</button>
     </form>
 
-<h2>Purchase Items</h2>
+	<h2>Purchase Items</h2>
 <form id="purchaseForm">
     <div id="productsContainer">
         <div class="product">
@@ -79,18 +79,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <button type="submit">Purchase</button>
 </form>
 
-	
-    <script>
-        function redirect() {
-            window.location.href = 'index2.html';
-        }
-    </script>
-    <script>
-        function redirect2() {
-            window.location.href = 'index3.html';
-        }
-    </script>
-
 <script>
     document.getElementById('purchaseForm').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent the default form submission
@@ -100,12 +88,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         window.dataLayer.push({ ecommerce: null }); // Clear the previous ecommerce object
 
         // Get and convert values
-        const itemName = document.getElementById('itemName').value;
-        const itemPrice = parseFloat(document.getElementById('itemPrice').value);
-        const itemQuantity = parseInt(document.getElementById('itemQuantity').value, 10);
+        const itemName = document.querySelector('.itemName').value;
+        const itemPrice = parseFloat(document.querySelector('.itemPrice').value);
+        const itemQuantity = parseInt(document.querySelector('.itemQuantity').value, 10);
+        const itemDiscount = parseFloat(document.querySelector('.itemDiscount').value); // New Discount Field
 
-        // Calculate the total value
-        const totalValue = itemPrice * itemQuantity;
+        // Calculate the total value, taking the discount into account
+        const totalValue = (itemPrice - itemDiscount) * itemQuantity;
 
         window.dataLayer.push({
             event: 'purchase',
@@ -116,8 +105,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     {
                         item_name: itemName,
                         price: itemPrice.toFixed(2),
-                        quantity: itemQuantity
-                        // Add additional eCommerce parameters as needed
+                        quantity: itemQuantity,
+                        discount: itemDiscount.toFixed(2) // Include the discount in the dataLayer
                     }
                 ]
             }
@@ -131,53 +120,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-<script>
-    document.getElementById('purchaseForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent the default form submission
-
-        // Initialize dataLayer
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({ ecommerce: null }); // Clear the previous ecommerce object
-
-        // Get all product elements
-        const products = document.querySelectorAll('.product');
-        const items = [];
-        let totalValue = 0;
-
-        products.forEach(product => {
-            const itemName = product.querySelector('.itemName').value;
-            const itemPrice = parseFloat(product.querySelector('.itemPrice').value);
-            const itemQuantity = parseInt(product.querySelector('.itemQuantity').value, 10);
-            const itemDiscount = parseFloat(product.querySelector('.itemDiscount').value);
-
-            const itemTotal = (itemPrice * itemQuantity) - itemDiscount;
-
-            items.push({
-                item_name: itemName,
-                price: itemPrice.toFixed(2),
-                quantity: itemQuantity,
-                discount: itemDiscount.toFixed(2) // Add discount to item data
-            });
-
-            totalValue += itemTotal;
-        });
-
-        // Push the data to dataLayer
-        window.dataLayer.push({
-            event: 'purchase',
-            ecommerce: {
-                currency: 'USD', // Update as necessary
-                value: totalValue.toFixed(2), // Total value of all items after discount
-                items: items
-            }
-        });
-
-        // Redirect after submission if needed
-        // redirect(); // Uncomment this line if you want to redirect after submission
-    });
-</script>
-
-
+	
+    <script>
+        function redirect() {
+            window.location.href = 'index2.html';
+        }
+    </script>
+    <script>
+        function redirect2() {
+            window.location.href = 'index3.html';
+        }
+    </script>
 
 
     
